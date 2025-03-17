@@ -5,6 +5,7 @@ import dotenv from 'dotenv';
 import connectDB from './config/database.js';
 import authRoutes from './routes/authRoutes.js';
 import customerRoutes from './routes/customerRoutes.js';
+import staffRoutes from './routes/staffRoutes.js';
 
 // Load env vars
 dotenv.config();
@@ -23,7 +24,7 @@ app.use(express.urlencoded({ extended: true }));
 // Mount routes
 app.use('/api/auth', authRoutes);
 app.use('/api/customers', customerRoutes);
-
+app.use('/api/staff', staffRoutes);
 
 // Base route
 app.get('/', (req, res) => {

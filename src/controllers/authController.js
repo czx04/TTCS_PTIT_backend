@@ -3,20 +3,20 @@ import { successResponse, errorResponse } from '../utils/responseHandler.js';
 
 const register = async (req, res) => {
     try {
-        const { email, password, fullName, phone, role } = req.body;
+        const { phone, password, fullName, email, role } = req.body;
 
-        // Kiểm tra email đã tồn tại
-        const existingUser = await User.findOne({ email });
+        // Kiểm tra số điện thoại đã tồn tại
+        const existingUser = await User.findOne({ phone });
         if (existingUser) {
-            return errorResponse(res, 'Email đã được sử dụng', 400);
+            return errorResponse(res, 'Số điện thoại đã được sử dụng', 400);
         }
 
         // Tạo user mới
         const user = await User.create({
-            email,
+            phone,
             password,
             fullName,
-            phone,
+            email,
             role: role || 'customer' // Mặc định là customer nếu không có role
         });
 
@@ -31,15 +31,15 @@ const register = async (req, res) => {
 
 const login = async (req, res) => {
     try {
-        const { email, password } = req.body;
+        const { phone, password } = req.body;
 
-        // Validate email & password
-        if (!email || !password) {
-            return errorResponse(res, 'Vui lòng nhập email và mật khẩu', 400);
+        // Validate phone & password
+        if (!phone || !password) {
+            return errorResponse(res, 'Vui lòng nhập số điện thoại và mật khẩu', 400);
         }
 
         // Kiểm tra user
-        const user = await User.findOne({ email }).select('+password');
+        const user = await User.findOne({ phone }).select('+password');
         if (!user) {
             return errorResponse(res, 'Thông tin đăng nhập không chính xác', 401);
         }

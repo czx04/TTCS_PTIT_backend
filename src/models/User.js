@@ -5,8 +5,6 @@ import jwt from 'jsonwebtoken';
 const userSchema = new mongoose.Schema({
     email: {
         type: String,
-        required: [true, 'Email là bắt buộc'],
-        unique: true,
         trim: true,
         lowercase: true,
         match: [/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/, 'Email không hợp lệ']
@@ -24,6 +22,7 @@ const userSchema = new mongoose.Schema({
     phone: {
         type: String,
         required: [true, 'Số điện thoại là bắt buộc'],
+        unique: true,
         match: [/^[0-9]{10}$/, 'Số điện thoại không hợp lệ']
     },
     role: {

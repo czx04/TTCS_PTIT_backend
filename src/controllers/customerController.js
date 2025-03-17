@@ -8,11 +8,15 @@ const createAppointment = async (req, res) => {
     try {
         const { staffId, appointmentDate, services, note } = req.body;
 
+        // Tính tổng giá
+        const totalPrice = services.reduce((total, service) => total + service.price, 0);
+
         const appointment = await Appointment.create({
             customer: req.user.id,
             staff: staffId,
             appointmentDate,
             services,
+            totalPrice,
             note
         });
 

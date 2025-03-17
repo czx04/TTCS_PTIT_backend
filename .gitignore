@@ -33,3 +33,6 @@ Thumbs.db
 
 API.md
 DATABASE.md
+
+# Ignore fake data
+src/fake_data/
