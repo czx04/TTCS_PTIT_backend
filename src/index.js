@@ -4,6 +4,7 @@ import morgan from 'morgan';
 import dotenv from 'dotenv';
 import connectDB from './config/database.js';
 import authRoutes from './routes/authRoutes.js';
+import customerRoutes from './routes/customerRoutes.js';
 
 // Load env vars
 dotenv.config();
@@ -21,6 +22,8 @@ app.use(express.urlencoded({ extended: true }));
 
 // Mount routes
 app.use('/api/auth', authRoutes);
+app.use('/api/customers', customerRoutes);
+
 
 // Base route
 app.get('/', (req, res) => {

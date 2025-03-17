@@ -16,6 +16,7 @@ logs/
 *.log
 log/
 
+
 # Ignore build files
 dist/
 build/
@@ -29,3 +30,6 @@ Thumbs.db
 
 # Ignore cache
 .cache/
+
+API.md
+DATABASE.md
