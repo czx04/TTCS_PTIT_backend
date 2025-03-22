@@ -5,7 +5,9 @@ import {
     getMyAppointments,
     getProducts,
     createOrder,
-    getMyOrders
+    getMyOrders,
+    cancelAppointment,
+    cancelOrder
 } from '../controllers/customerController.js';
 
 const router = express.Router();
@@ -19,6 +21,8 @@ router.route('/appointments')
     .post(createAppointment)
     .get(getMyAppointments);
 
+router.post('/cancelappointment', cancelAppointment);
+
 // Product routes
 router.get('/products', getProducts);
 
@@ -26,5 +30,7 @@ router.get('/products', getProducts);
 router.route('/orders')
     .post(createOrder)
     .get(getMyOrders);
+
+router.post('/cancelorder', cancelOrder);
 
 export default router; 

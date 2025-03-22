@@ -58,11 +58,20 @@ const getMyShifts = async (req, res) => {
 
 // @desc    Xem lịch đặt của khách
 // @route   GET /api/staff/appointments
-// @access  Private (Staff only)
+// @access  Private (Admin & Staff)
 const getMyAppointments = async (req, res) => {
     try {
-        const { date, status } = req.query;
-        let query = { staff: req.user.id };
+        const { date, status, staffId } = req.query;
+        let query = {};
+
+        // Nếu là staff, chỉ xem được lịch của mình
+        if (req.user.role === 'staff') {
+            query.staff = req.user.id;
+        }
+        // Nếu là admin và có staffId, xem lịch của staff cụ thể
+        else if (req.user.role === 'admin' && staffId) {
+            query.staff = staffId;
+        }
 
         // Lọc theo ngày
         if (date) {
@@ -82,6 +91,7 @@ const getMyAppointments = async (req, res) => {
 
         const appointments = await Appointment.find(query)
             .populate('customer', 'fullName phone')
+            .populate('staff', 'fullName phone')  // Thêm thông tin staff cho admin xem
             .sort({ appointmentDate: 1 });
 
         successResponse(res, { appointments }, 'Lấy danh sách lịch hẹn thành công');
@@ -92,17 +102,30 @@ const getMyAppointments = async (req, res) => {
 
 // @desc    Xem lịch sử cắt tóc của khách hàng
 // @route   GET /api/staff/customers/:customerId/history
-// @access  Private (Staff only)
+// @access  Private (All roles)
 const getCustomerHistory = async (req, res) => {
     try {
         const { customerId } = req.params;
         
-        const appointments = await Appointment.find({
+        // Kiểm tra quyền truy cập
+        if (req.user.role === 'customer' && req.user.id !== customerId) {
+            return errorResponse(res, 'Bạn chỉ có thể xem lịch sử cắt tóc của chính mình', 403);
+        }
+
+        const query = {
             customer: customerId,
             status: 'completed'
-        })
+        };
+
+        const appointments = await Appointment.find(query)
             .populate('staff', 'fullName')
+            .populate('customer', 'fullName phone')  // Thêm thông tin khách hàng
             .sort({ appointmentDate: -1 });
+
+        // Nếu không tìm thấy lịch sử
+        if (appointments.length === 0) {
+            return successResponse(res, { appointments }, 'Chưa có lịch sử cắt tóc');
+        }
 
         successResponse(res, { appointments }, 'Lấy lịch sử cắt tóc thành công');
     } catch (error) {

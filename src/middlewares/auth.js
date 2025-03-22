@@ -46,4 +46,4 @@ const authorize = (...roles) => {
     };
 };
 
-export { protect, authorize }; 
+export { protect, authorize };

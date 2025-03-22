@@ -15,4 +15,4 @@ const errorResponse = (res, message = 'Server Error', statusCode = 500) => {
     });
 };
 
-export { successResponse, errorResponse }; 
+export { successResponse, errorResponse };

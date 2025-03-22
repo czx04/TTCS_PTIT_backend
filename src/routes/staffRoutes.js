@@ -10,23 +10,22 @@ import {
 
 const router = express.Router();
 
-// Bảo vệ tất cả các routes và chỉ cho phép staff truy cập
+// Bảo vệ tất cả các routes
 router.use(protect);
-router.use(authorize('staff'));
 
-// Shift routes
-router.route('/shifts')
-    .post(registerShift)
-    .get(getMyShifts);
-
-// Appointment routes
+// Phân quyền cho từng route
 router.route('/appointments')
-    .get(getMyAppointments);
+    .get(authorize('admin', 'staff'), getMyAppointments);
+
+router.route('/shifts')
+    .post(authorize('staff'), registerShift)
+    .get(authorize('staff'), getMyShifts);
 
 router.route('/appointments/:appointmentId')
-    .patch(updateAppointmentStatus);
+    .patch(authorize('staff'), updateAppointmentStatus);
 
-// Customer history route
-router.get('/customers/:customerId/history', getCustomerHistory);
+// Route xem lịch sử cắt tóc - cho phép tất cả role truy cập
+router.route('/customers/:customerId/history')
+    .get(authorize('admin', 'staff', 'customer', 'inventory'), getCustomerHistory);
 
 export default router; 
