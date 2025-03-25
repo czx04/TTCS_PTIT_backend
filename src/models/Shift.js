@@ -20,6 +20,20 @@ const shiftSchema = new mongoose.Schema({
         enum: ['available', 'booked', 'completed', 'cancelled'],
         default: 'available'
     },
+    checkIn: {
+        time: Date,
+        location: {
+            latitude: Number,
+            longitude: Number
+        }
+    },
+    checkOut: {
+        time: Date,
+        location: {
+            latitude: Number,
+            longitude: Number
+        }
+    },
     note: String
 }, {
     timestamps: true

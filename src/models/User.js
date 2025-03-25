@@ -1,6 +1,7 @@
 import mongoose from 'mongoose';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
+import crypto from 'crypto';
 
 const userSchema = new mongoose.Schema({
     email: {
@@ -33,7 +34,9 @@ const userSchema = new mongoose.Schema({
     isActive: {
         type: Boolean,
         default: true
-    }
+    },
+    resetPasswordToken: String,
+    resetPasswordExpire: Date
 }, {
     timestamps: true
 });
@@ -59,6 +62,23 @@ userSchema.methods.getSignedJwtToken = function() {
 // So sánh mật khẩu
 userSchema.methods.matchPassword = async function(enteredPassword) {
     return await bcrypt.compare(enteredPassword, this.password);
+};
+
+// Tạo token reset password
+userSchema.methods.getResetPasswordToken = function() {
+    // Tạo token
+    const resetToken = crypto.randomBytes(20).toString('hex');
+
+    // Hash token và lưu vào DB
+    this.resetPasswordToken = crypto
+        .createHash('sha256')
+        .update(resetToken)
+        .digest('hex');
+
+    // Đặt thời gian hết hạn (30 phút)
+    this.resetPasswordExpire = Date.now() + 30 * 60 * 1000;
+
+    return resetToken;
 };
 
 const User = mongoose.model('User', userSchema);

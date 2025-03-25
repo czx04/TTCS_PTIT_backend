@@ -36,6 +36,15 @@ const appointmentSchema = new mongoose.Schema({
     },
     note: {
         type: String
+    },
+    review: {
+        rating: {
+            type: Number,
+            min: 1,
+            max: 5
+        },
+        comment: String,
+        createdAt: Date
     }
 }, {
     timestamps: true

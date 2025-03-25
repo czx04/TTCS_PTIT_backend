@@ -1,36 +1,52 @@
 import express from 'express';
-import { protect, authorize } from '../middlewares/auth.js';
-import {
-    createAppointment,
-    getMyAppointments,
-    getProducts,
-    createOrder,
-    getMyOrders,
+import { 
+    createAppointment, 
+    getMyAppointments, 
     cancelAppointment,
-    cancelOrder
+    updateAppointment,
+    reviewAppointment,
+    getProducts, 
+    createOrder, 
+    getMyOrders, 
+    cancelOrder,
 } from '../controllers/customerController.js';
+import { protect, authorize } from '../middlewares/auth.js';
 
 const router = express.Router();
 
-// Bảo vệ tất cả các routes bên dưới
+// Bảo vệ tất cả các routes
 router.use(protect);
 router.use(authorize('customer'));
 
-// Appointment routes
+// Quản lý lịch hẹn
 router.route('/appointments')
     .post(createAppointment)
     .get(getMyAppointments);
 
-router.post('/cancelappointment', cancelAppointment);
+router.route('/appointments/:appointmentId')
+    .put(updateAppointment);
 
-// Product routes
-router.get('/products', getProducts);
+router.route('/appointments/:appointmentId/cancel')
+    .post(cancelAppointment);
 
-// Order routes
+router.route('/appointments/:appointmentId/review')
+    .post(reviewAppointment);
+
+// Quản lý sản phẩm - Route này không yêu cầu đăng nhập
+router.use('/products', (req, res, next) => {
+    req.originalUrl.startsWith('/api/customers/products') ? next() : router.use(protect);
+});
+router.route('/products')
+    .get(getProducts);
+
+// Quản lý đơn hàng
 router.route('/orders')
     .post(createOrder)
     .get(getMyOrders);
 
-router.post('/cancelorder', cancelOrder);
+router.route('/orders/:orderId/cancel')
+    .post(cancelOrder);
+
+
 
 export default router; 

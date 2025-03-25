@@ -1,0 +1,18 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+
+# Your rule content
+- Only comment in confusing places or important places
+- Avoid random comments
+- Write code that is as simple and understandable as possible like a beginner study code
+- if possible, please use Vietnamese comments 
+- Re-read and code in the style of the previous code I used to use
+- from using functions or the smallest things like how to import and export
+- use VietNamese only while u talk to me
+- Always put types in a separate folder
+- Always create 1 API.md file to save how to test API updates each time related to the API
+ 1 file DATABASE.md description of the database (with the monggodb structure at the beginning)
+- Always re-read all my relevant code once before giving advice and editing
