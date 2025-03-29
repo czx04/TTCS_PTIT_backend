@@ -1,5 +1,7 @@
 import Product from '../models/Product.js';
 import Order from '../models/Order.js';
+import Supplier from '../models/Supplier.js';
+import ImportOrder from '../models/ImportOrder.js';
 import { successResponse, errorResponse } from '../utils/responseHandler.js';
 
 // @desc    Thêm sản phẩm mới
@@ -219,11 +221,85 @@ const getStatistics = async (req, res) => {
     }
 };
 
+// @desc    Thêm nhà cung cấp mới
+// @route   POST /api/inventory/suppliers
+// @access  Private (Admin only)
+const addSupplier = async (req, res) => {
+    try {
+        const { name, contact, address } = req.body;
+
+        const supplier = await Supplier.create({
+            name,
+            contact,
+            address
+        });
+
+        successResponse(res, { supplier }, 'Thêm nhà cung cấp thành công', 201);
+    } catch (error) {
+        errorResponse(res, error.message);
+    }
+};
+
+// @desc    Xem danh sách nhà cung cấp
+// @route   GET /api/inventory/suppliers
+// @access  Private (Admin only)
+const getSuppliers = async (req, res) => {
+    try {
+        const suppliers = await Supplier.find();
+        successResponse(res, { suppliers }, 'Lấy danh sách nhà cung cấp thành công');
+    } catch (error) {
+        errorResponse(res, error.message);
+    }
+};
+
+// @desc    Thêm đơn nhập hàng
+// @route   POST /api/inventory/import-orders
+// @access  Private (Admin only)
+const addImportOrder = async (req, res) => {
+    try {
+        const { supplier, items } = req.body;
+
+        const importOrder = await ImportOrder.create({
+            supplier,
+            items
+        });
+
+        // Cập nhật số lượng sản phẩm trong kho
+        for (let item of items) {
+            await Product.findByIdAndUpdate(item.product, {
+                $inc: { stock: item.quantity }
+            });
+        }
+
+        successResponse(res, { importOrder }, 'Thêm đơn nhập hàng thành công', 201);
+    } catch (error) {
+        errorResponse(res, error.message);
+    }
+};
+
+// @desc    Xem danh sách đơn nhập hàng
+// @route   GET /api/inventory/import-orders
+// @access  Private (Admin only)
+const getImportOrders = async (req, res) => {
+    try {
+        const importOrders = await ImportOrder.find()
+            .populate('supplier', 'name contact')
+            .populate('items.product', 'name price');
+        successResponse(res, { importOrders }, 'Lấy danh sách đơn nhập hàng thành công');
+    } catch (error) {
+        errorResponse(res, error.message);
+    }
+};
+
 export {
     addProduct,
     updateProduct,
     deleteProduct,
     getOrders,
     updateOrderStatus,
-    getStatistics
+    getStatistics,
+    addSupplier,
+    getSuppliers,
+    addImportOrder,
+    getImportOrders
 }; 

@@ -366,6 +366,7 @@ const cancelOrder = async (req, res) => {
 };
 
 
+
 export {
     createAppointment,
     getMyAppointments,
@@ -375,5 +376,6 @@ export {
     getProducts,
     createOrder,
     getMyOrders,
-    cancelOrder,
+    cancelOrder
 };
+

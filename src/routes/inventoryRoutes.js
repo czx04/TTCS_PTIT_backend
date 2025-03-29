@@ -6,7 +6,11 @@ import {
     deleteProduct,
     getOrders,
     updateOrderStatus,
-    getStatistics
+    getStatistics,
+    addSupplier,
+    getSuppliers,
+    addImportOrder,
+    getImportOrders
 } from '../controllers/inventoryController.js';
 
 const router = express.Router();
@@ -32,5 +36,15 @@ router.route('/orders/:id')
 
 // Statistics route
 router.get('/statistics', getStatistics);
+
+// Supplier routes
+router.route('/suppliers')
+    .post(addSupplier)
+    .get(getSuppliers);
+
+// Import Order routes
+router.route('/import-orders')
+    .post(addImportOrder)
+    .get(getImportOrders);
 
 export default router; 

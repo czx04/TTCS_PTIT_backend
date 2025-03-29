@@ -11,6 +11,10 @@ const register = async (req, res) => {
         if (existingUser) {
             return errorResponse(res, 'Số điện thoại đã được sử dụng', 400);
         }
+        const existingUser2 = await User.findOne({ email });
+        if (existingUser2) {
+            return errorResponse(res, 'Email đã được sử dụng', 400);
+        }
 
         // Tạo user mới
         const user = await User.create({
@@ -87,18 +91,14 @@ const forgotPassword = async (req, res) => {
         } else {
             user = await User.findOne({ phone });
         }
-
+        
         if (!user) {
             return errorResponse(res, 'Không tìm thấy người dùng với thông tin này', 404);
         }
-
+        
         // Tạo token reset password
         const resetToken = user.getResetPasswordToken();
         await user.save({ validateBeforeSave: false });
-
-        // Trong thực tế, ở đây sẽ gửi email hoặc SMS chứa link reset password
-        // Link reset có dạng: `${req.protocol}://${req.get('host')}/api/auth/reset-password/${resetToken}`
-        // Nhưng để đơn giản, chúng ta sẽ trả về token trực tiếp
 
         successResponse(
             res, 
@@ -111,9 +111,6 @@ const forgotPassword = async (req, res) => {
     }
 };
 
-// @desc    Reset mật khẩu
-// @route   POST /api/auth/reset-password
-// @access  Public
 const resetPassword = async (req, res) => {
     try {
         const { token, password } = req.body;

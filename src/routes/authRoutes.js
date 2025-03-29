@@ -1,17 +1,22 @@
 import express from 'express';
-import { register, login, getMe, forgotPassword, resetPassword } from '../controllers/authController.js';
-import { protect } from '../middlewares/auth.js';
+import { protect, authorize } from '../middlewares/auth.js';
+import {
+    register,
+    login,
+    getMe,
+    forgotPassword,
+    resetPassword
+} from '../controllers/authController.js';
 
 const router = express.Router();
 
-// Public routes
+// Public routes (không cần xác thực)
 router.post('/register', register);
 router.post('/login', login);
 router.post('/forgot-password', forgotPassword);
 router.post('/reset-password', resetPassword);
 
-// Protected routes
-router.use(protect); // Áp dụng middleware protect cho các routes bên dưới
-router.get('/me', getMe);
+// Protected routes (cần xác thực)
+router.get('/me', protect, getMe);
 
 export default router;

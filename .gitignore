@@ -34,5 +34,7 @@ Thumbs.db
 API.md
 DATABASE.md
 
+.cursor/
+
 # Ignore fake data
 src/fake_data/
